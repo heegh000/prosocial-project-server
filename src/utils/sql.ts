@@ -25,6 +25,7 @@ const sql_post_list = (page_num : number) : string=> {
             cm.post_id,
             ARRAY_AGG(cm.content) as comments
         FROM prosocial.comment as cm
+        ORDER BY cm.post_id
         GROUP BY cm.post_id
     ) AS cms
     ON board.post_id = cms.post_id
@@ -37,9 +38,30 @@ const sql_post_add = (data : NewPostType) : string=> {
     return `
         INSERT INTO prosocial.board(
             user_id, title, content)
-            VALUES ${db.escapeLiteral(data.user_id)}, ${db.escapeLiteral(data.title)}, ${db.escapeLiteral(data.content)});
+        VALUES ${db.escapeLiteral(data.user_id)}, ${db.escapeLiteral(data.title)}, ${db.escapeLiteral(data.content)});
     `
 };
+
+
+const sql_comment_list = (data : CommentLikeType) : string => {
+    return `
+        SELECT
+            ARRAY_AGG(cm.content) as "commentList"
+        FROM prosocial.comment as cm
+        WHERE cm.post_id = ${data.post_id}
+        ORDER BY cm.post_id
+        GROUP BY cm.post_id
+    `
+}
+
+const sql_comment_add = (data : CommentLikeType) : string => {
+    return `
+        INSERT INTO prosocial.comment(
+            user_id, post_id, content)
+        VALUES ${db.escapeLiteral(data.user_id)}, ${db.escapeLiteral(data.post_id.toString())}, ${db.escapeLiteral(data.content as string)});
+    `
+}
+
 
 const sql_like_check = (data : CommentLikeType) : string => {
     return `
@@ -56,13 +78,15 @@ const sql_like_inc = (data : CommentLikeType) : string => {
     return `
         INSERT INTO prosocial.like(
             user_id, post_id)
-            VALUES ${db.escapeLiteral(data.user_id)}, ${db.escapeLiteral(data.post_id.toString())});
+        VALUES ${db.escapeLiteral(data.user_id)}, ${db.escapeLiteral(data.post_id.toString())});
     `
 }
 
 export {
     sql_post_list,
     sql_post_add,
+    sql_comment_list,
+    sql_comment_add,
     sql_like_check,
     sql_like_inc
 }

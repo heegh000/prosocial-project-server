@@ -28,9 +28,9 @@ app.use(express.json());
 app.use(express.urlencoded({extended : false }));
 
 //테스팅 라우터
-app.use('/like', signup);
-app.use('/signin', signin);
 app.use('/board', board)
+app.use('/comment', signin);
+app.use('/like', signup);
 app.use('/test', test);
 
 //에러 처리
