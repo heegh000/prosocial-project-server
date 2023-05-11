@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { db } from '../database/db';
-import { sql_board_init } from '../utils/sql'
-import { PostInfo } from '../utils/interfaces'
+import { sql_post_list, sql_add_post } from '../utils/sql'
+import { PostType, NewPostType } from '../utils/interfaces'
 
 const router : Router = Router();
 
@@ -21,11 +21,13 @@ router.get('/', async(req : Request, res : Response) => {
             throw 'Page number is not Number type';
         }
 
-        const sql : string = sql_board_init(page_num);
-        let result : PostInfo[] = [];
+        const sql : string = sql_post_list(page_num);
+        let result : PostType[] = [];
         result = (await db.query(sql)).rows;
 
-        res.send(JSON.stringify(result));
+        console.log(result)
+
+        res.send(result);
     }
     catch(err) {
         if(err instanceof Error) {
@@ -34,20 +36,35 @@ router.get('/', async(req : Request, res : Response) => {
         else {
             console.log("Unknwon Error board init: " + err);
         }
-        res.status(500).send("Fail");
+        res.status(500).send("fail");
     }
 });
 
 router.post('/add', async(req : Request, res : Response) => {
     try {
-        console.log("ASDSAD");
-        console.log(req.body);
-        res.send(req.body);
+        if(!req.cookies.user_id) {
+            throw 'There is no user id';
+        }
+
+        const post_info : NewPostType = {
+            user_id : req.cookies.user_id,
+            title : req.body.title,
+            content : req.body.content
+        } 
+
+        const sql = sql_add_post(post_info);
+        await db.query(sql);
+
+        res.send('success');
     }
     catch(err) {
-
-
-        
+        if(err instanceof Error) {
+            console.error("Error board add: " + err);
+        }
+        else {
+            console.log("Unknwon Error board add: " + err);
+        }
+        res.status(500).send("fail");
     }
 });
 
