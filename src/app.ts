@@ -1,19 +1,27 @@
-import express, { Express, Request, Response, NextFunction, application} from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
+import { db } from './database/db';
 import { router as board } from './routes/board';
 import { router as signup } from './routes/signup';
 import { router as signin } from './routes/signin';
 import { router as test } from './routes/test';
 import cors from 'cors'
+import cookieParser from 'cookie-parser' 
 
 const app : Express = express();
-const port : number = 1324  ;
+const port : number = 1324;
 
+//db 연결
+db.connect();
+console.log("DB connected")
 
 //CORS 설정
 app.use(cors<Request>({
     origin: 'http://172.25.128.1:3000',
     credentials: true
 }));
+
+//쿠키 암호화 설정
+app.use(cookieParser('asdsadasdasdasdasd'))
 
 //request body 데이터 처리를 위한 미들웨어
 app.use(express.json());

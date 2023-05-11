@@ -1,0 +1,10 @@
+{
+    "db_config" : {
+                    "user" : "postgres",
+                    "host": "sasim-db.cr6fj5cepn0f.ap-northeast-2.rds.amazonaws.com",
+                    "database": "postgres",
+                    "password": "css1234!",
+                    "port": 5432
+                  }
+  }
+  
