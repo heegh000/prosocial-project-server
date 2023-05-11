@@ -1,4 +1,4 @@
-interface PostInfo {
+interface PostType {
     post_id : number;
     title : string;
     content : string;
@@ -7,15 +7,21 @@ interface PostInfo {
 }
 
 
-interface PostToAdd {
+interface NewPostType {
     user_id : string;
     title : string;
     content : string;
 }
 
 
+interface CommentLikeType {
+    user_id : string;
+    post_id : number;
+    content? : string;
+}
 
 export type {
-    PostToAdd,
-    PostInfo
+    PostType,
+    NewPostType,
+    CommentLikeType
 }

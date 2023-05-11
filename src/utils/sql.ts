@@ -1,14 +1,16 @@
+import { resolveTypeReferenceDirective } from 'typescript';
 import { db } from '../database/db';
-import { PostToAdd } from './interfaces'
+import { NewPostType, CommentLikeType } from './interfaces'
 
-const sql_board_init = (page_num : number) : string=> {
+const sql_post_list = (page_num : number) : string=> {
     return `
     SELECT 
-        board.post_id,
+        board.post_id AS "postId",
         title,
-        content,
-        created_at,
-        COALESCE(like_cnt, 0) as like_cnt
+        board.content,
+        board.created_at AS "createdAt",
+        COALESCE(like_cnt, 0) AS "likeCnt",
+        comments AS "commentList"
     FROM prosocial.board AS board
     LEFT JOIN (
         SELECT
@@ -18,21 +20,49 @@ const sql_board_init = (page_num : number) : string=> {
         GROUP BY l.post_id
     ) AS cnt
     ON cnt.post_id = board.post_id
-    ORDER BY board.post_id
+    JOIN (
+        SELECT
+            cm.post_id,
+            ARRAY_AGG(cm.content) as comments
+        FROM prosocial.comment as cm
+        GROUP BY cm.post_id
+    ) AS cms
+    ON board.post_id = cms.post_id
+    ORDER BY board.post_id DESC
     OFFSET ${page_num * 5} LIMIT 5;
     `
-}
+};
 
-const sql_add_post = (data : PostToAdd) : string=> {
+const sql_add_post = (data : NewPostType) : string=> {
     return `
         INSERT INTO prosocial.board(
             user_id, title, content)
             VALUES ${db.escapeLiteral(data.user_id)}, ${db.escapeLiteral(data.title)}, ${db.escapeLiteral(data.content)});
-    
+    `
+};
+
+const sql_check_user_like = (data : CommentLikeType) : string => {
+    return `
+        SELECT 
+            post_id
+        FROM 
+            prosocial.like AS l
+        WHERE l.user_id = ${data.user_id}
+            AND l.post_id = ${data.post_id}
+    `
+};
+
+const sql_inc_like = (data : CommentLikeType) : string => {
+    return `
+        INSERT INTO prosocial.like(
+            user_id, post_id)
+            VALUES ${db.escapeLiteral(data.user_id)}, ${db.escapeLiteral(data.post_id.toString())});
     `
 }
 
 export {
-    sql_board_init,
-    sql_add_post
+    sql_post_list,
+    sql_add_post,
+    sql_check_user_like,
+    sql_inc_like
 }
