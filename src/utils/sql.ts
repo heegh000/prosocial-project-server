@@ -33,7 +33,7 @@ const sql_post_list = (page_num : number) : string=> {
     `
 };
 
-const sql_add_post = (data : NewPostType) : string=> {
+const sql_post_add = (data : NewPostType) : string=> {
     return `
         INSERT INTO prosocial.board(
             user_id, title, content)
@@ -41,7 +41,7 @@ const sql_add_post = (data : NewPostType) : string=> {
     `
 };
 
-const sql_check_user_like = (data : CommentLikeType) : string => {
+const sql_like_check = (data : CommentLikeType) : string => {
     return `
         SELECT 
             post_id
@@ -52,7 +52,7 @@ const sql_check_user_like = (data : CommentLikeType) : string => {
     `
 };
 
-const sql_inc_like = (data : CommentLikeType) : string => {
+const sql_like_inc = (data : CommentLikeType) : string => {
     return `
         INSERT INTO prosocial.like(
             user_id, post_id)
@@ -62,7 +62,7 @@ const sql_inc_like = (data : CommentLikeType) : string => {
 
 export {
     sql_post_list,
-    sql_add_post,
-    sql_check_user_like,
-    sql_inc_like
+    sql_post_add,
+    sql_like_check,
+    sql_like_inc
 }

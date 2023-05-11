@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { db } from '../database/db';
-import { sql_post_list, sql_add_post } from '../utils/sql'
+import { sql_post_list, sql_post_add } from '../utils/sql'
 import { PostType, NewPostType } from '../utils/interfaces'
 
 const router : Router = Router();
@@ -52,7 +52,7 @@ router.post('/add', async(req : Request, res : Response) => {
             content : req.body.content
         } 
 
-        const sql = sql_add_post(post_info);
+        const sql = sql_post_add(post_info);
         await db.query(sql);
 
         res.send('success');
