@@ -1,4 +1,5 @@
-import express, { Express, Request, Response, NextFunction, application} from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
+import { db } from './database/db';
 import { router as board } from './routes/board';
 import { router as signup } from './routes/signup';
 import { router as signin } from './routes/signin';
@@ -6,8 +7,11 @@ import { router as test } from './routes/test';
 import cors from 'cors'
 
 const app : Express = express();
-const port : number = 1324  ;
+const port : number = 1324;
 
+//db 연결
+db.connect();
+console.log("DB connected")
 
 //CORS 설정
 app.use(cors<Request>({
