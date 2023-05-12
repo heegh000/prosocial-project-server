@@ -20,7 +20,7 @@ router.post('/', async(req : Request, res : Response) => {
         const sql_check : string = sql_like_check(like_info);
         let result_cnt : number = (await db.query(sql_check)).rowCount;
 
-        result_cnt = 0;
+        result_cnt = 1;
         if(result_cnt == 0) {
             res.status(400).send('fail')
         }
