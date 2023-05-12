@@ -1,8 +1,8 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { db } from './database/db';
 import { router as board } from './routes/board';
-import { router as signup } from './routes/signup';
-import { router as signin } from './routes/signin';
+import { router as comment } from './routes/comment';
+import { router as like } from './routes/like';
 import { router as test } from './routes/test';
 import cors from 'cors'
 import cookieParser from 'cookie-parser' 
@@ -16,12 +16,12 @@ console.log("DB connected")
 
 //CORS 설정
 app.use(cors<Request>({
-    origin: 'http://172.25.128.1:3000',
+    origin: ['http://prosocial1004.site', 'https://prosocial1004.netlify.app', 'http://localhost:3000'],
     credentials: true
 }));
 
 //쿠키 암호화 설정
-app.use(cookieParser('asdsadasdasdasdasd'))
+app.use(cookieParser());
 
 //request body 데이터 처리를 위한 미들웨어
 app.use(express.json());
@@ -29,8 +29,8 @@ app.use(express.urlencoded({extended : false }));
 
 //테스팅 라우터
 app.use('/board', board)
-app.use('/comment', signin);
-app.use('/like', signup);
+app.use('/comment', comment);
+app.use('/like', like);
 app.use('/test', test);
 
 //에러 처리

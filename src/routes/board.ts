@@ -7,14 +7,14 @@ const router : Router = Router();
 
 router.get('/', async(req : Request, res : Response) => {
     try {
-        if(!req.cookies.user_id) {
-            const privateKey = Math.floor(Math.random() * 1000000000);
-            res.cookie('user_id', privateKey, {
-                maxAge: 60 * 60 * 24 * 30,
-                // sameSite : 'none',
-                // secure: true
-            });
-        }
+        // if(!req.cookies.user_id) {
+        //     const privateKey = Math.floor(Math.random() * 1000000000);
+        //     res.cookie('user_id', privateKey, {
+        //         maxAge: 60 * 60 * 24 * 30,
+        //         // sameSite : 'none',
+        //         // secure: true
+        //     });
+        // }
 
         const page_num : number = Number(req.query.page_num);
         if(isNaN(page_num)) {
@@ -24,8 +24,6 @@ router.get('/', async(req : Request, res : Response) => {
         const sql : string = sql_post_list(page_num);
         let result : PostType[] = [];
         result = (await db.query(sql)).rows;
-
-        console.log(result)
 
         res.send(result);
     }
@@ -43,7 +41,8 @@ router.get('/', async(req : Request, res : Response) => {
 router.post('/', async(req : Request, res : Response) => {
     try {
         if(!req.cookies.user_id) {
-            throw 'There is no user id';
+            // throw 'There is no user id';
+            req.cookies.user_id = 'default_id';
         }
 
         const post_info : NewPostType = {

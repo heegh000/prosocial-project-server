@@ -8,7 +8,8 @@ const router : Router = Router();
 router.get('/', async(req : Request, res : Response) => {
     try {
         if(!req.cookies.user_id) {
-            throw 'There is no user id';
+            // throw 'There is no user id';
+            req.cookies.user_id = 'default_id';
         }
 
         const comment_info : CommentLikeType = {
@@ -17,9 +18,7 @@ router.get('/', async(req : Request, res : Response) => {
         }
 
         const sql : string = sql_comment_list(comment_info);
-        const result = (await db.query(sql)).rows;
-
-        console.log(result)
+        const result : any = (await db.query(sql)).rows[0];
 
         res.send(result);
     }
@@ -37,7 +36,8 @@ router.get('/', async(req : Request, res : Response) => {
 router.post('/', async(req : Request, res : Response) => {
     try {
         if(!req.cookies.user_id) {
-            throw 'There is no user id';
+            // throw 'There is no user id';
+            req.cookies.user_id = 'default_id';
         }
 
         const comment_info : CommentLikeType = {
