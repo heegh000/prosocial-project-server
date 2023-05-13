@@ -14,7 +14,7 @@ router.get('/', async(req : Request, res : Response) => {
 
         const comment_info : CommentLikeType = {
             user_id : req.cookies.user_id,
-            post_id : Number(req.body.post_id)
+            post_id : Number(req.query.post_id)
         }
 
         const sql : string = sql_comment_list(comment_info);
